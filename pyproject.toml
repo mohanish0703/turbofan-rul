@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "turbofan-rul"
+version = "0.1.0"
+description = "Remaining Useful Life prediction for turbofan engines (NASA C-MAPSS), built end to end."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "mohanish0703" }]
+# Exact pins. The full planned stack (torch 2.14.1+cpu, xgboost 3.2.0, mlflow 3.16.1,
+# fastapi 0.142.2, streamlit 1.64.0, evidently 0.7.23) was dry-run resolved together with
+# these; each extra is added in the phase that first uses it.
+dependencies = [
+    "numpy==2.4.6",
+    "pandas==3.0.6",
+    "scikit-learn==1.9.1",
+    "pydantic==2.13.5",
+    "pyyaml==6.0.3",
+    "joblib==1.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1",
+    "ruff==0.16.10",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "NPY", "PT"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["rul"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

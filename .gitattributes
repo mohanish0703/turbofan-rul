@@ -1,0 +1,4 @@
+# Store and check out text as LF on every OS (Docker/Linux CI need LF; Windows tools handle it).
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf

@@ -1,0 +1,18 @@
+# Defaults for every dataset. Per-dataset files (fd00X.yaml) and extra files
+# (e.g. smoke.yaml) are merged on top, in that order.
+seed: 42
+
+data:
+  raw_dir: data/raw/CMAPSS
+
+preprocess:
+  # Piece-wise linear target: RUL is flat at rul_cap early in life, then decreases linearly.
+  rul_cap: 125
+  # Sensors whose pooled within-operating-condition variance (raw units) is below this are dropped.
+  variance_threshold: 1.0e-4
+  # KMeans clusters on the 3 operating settings; 1 = single global scaler.
+  n_conditions: 1
+  window_length: 30
+
+cv:
+  n_folds: 5

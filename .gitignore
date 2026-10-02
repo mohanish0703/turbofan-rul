@@ -1,0 +1,50 @@
+# Patterns starting with "/" are anchored to the repo root on purpose:
+# an unanchored "models/" would also ignore src/rul/models/.
+
+# --- Data (never commit; C-MAPSS is downloaded by each user) ---
+/data/
+
+# --- Model binaries and experiment tracking ---
+/models/*
+!/models/.gitkeep
+/mlruns/
+/mlartifacts/
+*.pt
+*.pth
+*.joblib
+*.pkl
+*.ubj
+
+# --- Generated reports / smoke outputs (real results/ files ARE committed) ---
+/reports/
+/results/smoke/
+
+# --- Secrets ---
+.env
+.env.*
+*.key
+*.pem
+*.crt
+secrets/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

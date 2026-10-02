@@ -1,0 +1,3 @@
+# FD002: six operating conditions, one fault mode (HPC degradation).
+preprocess:
+  n_conditions: 6

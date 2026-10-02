@@ -1,0 +1,3 @@
+# FD001: one operating condition, one fault mode (HPC degradation).
+preprocess:
+  n_conditions: 1

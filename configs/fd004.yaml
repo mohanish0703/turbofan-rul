@@ -1,0 +1,3 @@
+# FD004: six operating conditions, two fault modes (HPC and fan degradation).
+preprocess:
+  n_conditions: 6

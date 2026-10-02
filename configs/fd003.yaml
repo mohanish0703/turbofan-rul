@@ -1,0 +1,3 @@
+# FD003: one operating condition, two fault modes (HPC and fan degradation).
+preprocess:
+  n_conditions: 1

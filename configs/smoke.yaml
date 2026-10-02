@@ -1,0 +1,6 @@
+# Smoke runs use SYNTHETIC data (scripts/make_synthetic_data.py), never the real C-MAPSS files.
+data:
+  raw_dir: data/synthetic/CMAPSS
+
+cv:
+  n_folds: 3
