@@ -4,3 +4,9 @@ data:
 
 cv:
   n_folds: 3
+
+models:
+  random_forest:
+    n_estimators: 20
+  xgboost:
+    n_estimators: 30

@@ -31,11 +31,31 @@ class CVConfig(_Strict):
     n_folds: int = Field(5, ge=2)
 
 
+class RandomForestConfig(_Strict):
+    n_estimators: int = Field(200, ge=1)
+    min_samples_leaf: int = Field(10, ge=1)
+    max_features: float = Field(0.5, gt=0, le=1)
+
+
+class XGBoostConfig(_Strict):
+    n_estimators: int = Field(400, ge=1)
+    learning_rate: float = Field(0.05, gt=0, le=1)
+    max_depth: int = Field(4, ge=1)
+    subsample: float = Field(0.8, gt=0, le=1)
+    colsample_bytree: float = Field(0.8, gt=0, le=1)
+
+
+class ModelsConfig(_Strict):
+    random_forest: RandomForestConfig = RandomForestConfig()
+    xgboost: XGBoostConfig = XGBoostConfig()
+
+
 class Config(_Strict):
     seed: int = 42
     data: DataConfig = DataConfig()
     preprocess: PreprocessConfig = PreprocessConfig()
     cv: CVConfig = CVConfig()
+    models: ModelsConfig = ModelsConfig()
 
 
 def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
@@ -70,6 +90,7 @@ def config_for(
     dataset: str,
     extra: str | Path | None = None,
     config_dir: str | Path = DEFAULT_CONFIG_DIR,
+    overrides: dict[str, Any] | None = None,
 ) -> Config:
     """default.yaml, then <dataset>.yaml if present, then ``extra`` (e.g. smoke.yaml)."""
     config_dir = Path(config_dir)
@@ -79,4 +100,4 @@ def config_for(
         paths.append(dataset_file)
     if extra is not None:
         paths.append(Path(extra))
-    return load_config(*paths)
+    return load_config(*paths, overrides=overrides)

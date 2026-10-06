@@ -29,7 +29,13 @@ def test_nasa_penalises_late_more_than_early():
 
 def test_perfect_prediction_is_zero():
     y = np.array([1.0, 20.0, 125.0])
-    assert all_metrics(y, y) == {"rmse": 0.0, "mae": 0.0, "nasa_score": 0.0}
+    assert all_metrics(y, y) == {"rmse": 0.0, "mae": 0.0, "nasa_score": 0.0, "nasa_score_mean": 0.0}
+
+
+def test_nasa_score_mean_is_per_prediction():
+    m = all_metrics([100, 100, 50], [87, 110, 50])
+    assert m["nasa_score"] == pytest.approx(2 * (math.e - 1))
+    assert m["nasa_score_mean"] == pytest.approx(2 * (math.e - 1) / 3)
 
 
 def test_bad_inputs():

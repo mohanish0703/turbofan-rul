@@ -16,3 +16,16 @@ preprocess:
 
 cv:
   n_folds: 5
+
+# Tabular baselines (Phase 2). Hand-set, CPU-friendly values; not tuned.
+models:
+  random_forest:
+    n_estimators: 200
+    min_samples_leaf: 10
+    max_features: 0.5
+  xgboost:
+    n_estimators: 400
+    learning_rate: 0.05
+    max_depth: 4
+    subsample: 0.8
+    colsample_bytree: 0.8

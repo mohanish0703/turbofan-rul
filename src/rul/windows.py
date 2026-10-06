@@ -23,6 +23,7 @@ class Windows:
     y: np.ndarray | None  # (n_windows,) target at the window's last row
     units: np.ndarray  # (n_windows,) engine id of each window
     cycles: np.ndarray  # (n_windows,) cycle of each window's last row
+    features: tuple[str, ...] = ()  # names of the last axis of X
 
     def __len__(self) -> int:
         return len(self.X)
@@ -72,6 +73,7 @@ def make_windows(
         y=np.concatenate(ys) if target_col is not None else None,
         units=np.concatenate(units),
         cycles=np.concatenate(cycles),
+        features=tuple(feature_cols),
     )
 
 

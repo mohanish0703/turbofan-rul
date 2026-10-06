@@ -30,6 +30,7 @@ def test_valid_window_shapes_and_targets():
     w = make_windows(df, FEATURES, window=5, target_col="rul")
     assert w.X.shape == (6 + 3, 5, 2)
     assert w.X.dtype == np.float32
+    assert w.features == ("a", "b")
     # First window of engine 1 covers cycles 1..5 and is labelled with RUL at cycle 5.
     np.testing.assert_array_equal(w.X[0, :, 0], 1000 + np.arange(1, 6))
     assert w.y[0] == 10 - 5

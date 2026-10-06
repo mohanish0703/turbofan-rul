@@ -14,11 +14,33 @@ real system (validated models, MLflow, FastAPI, Streamlit, Docker, drift monitor
 7. SYNTHETIC data (`data/synthetic/`, `rul.synthetic`) is for tests/CI/smoke only and must be
    labelled synthetic wherever its outputs appear. Smoke outputs go to `results/smoke/` (ignored).
 
+## Status and plan
+Backs the "Predictive Maintenance ML Service" entry on the owner's Data Scientist resume. When a
+phase produces results, report the real numbers (and the month finished) so the resume can be
+updated to match the repo - never tune the repo to match the resume.
+
+- Phase 1 (data pipeline) done. Real C-MAPSS files are in `data/raw/CMAPSS/` (git-ignored, from
+  NASA's PCoE archive); `python -m rul.prepare --dataset FD001 FD002 FD003 FD004` runs on them.
+- `.venv` already has torch 2.14.1+cpu installed but not pinned: pin it in Phase 3. XGBoost is
+  pinned as `xgboost-cpu` (plain `xgboost` pulls ~480 MB of CUDA/NCCL on Linux); macOS uses `xgboost`.
+- Docker is not installed on this machine; the owner installs Docker Desktop before Phase 5.
+
+Remaining phases, one at a time:
+2. Baselines: Linear Regression, Random Forest, XGBoost, CV with engine-wise GroupKFold
+3. LSTM and Transformer encoder (PyTorch)
+4. MLflow tracking; conformal prediction intervals at a 90% target, reporting the measured coverage
+5. FastAPI service + Dockerfile
+6. Streamlit dashboard + Evidently drift monitoring
+7. GitHub Actions CI + Azure deployment guide (the owner runs any login/deploy commands)
+
 ## Commands (GNU make; on Windows `winget install ezwinports.make`)
 - `make venv && make install` - Python 3.11 venv + editable install with dev tools
 - `make lint` / `make format` - ruff
 - `make test` - pytest (uses a generated synthetic dataset; no real data needed)
-- `make smoke` - full pipeline on synthetic data
+- `make smoke` - full pipeline on synthetic data (outputs in `results/smoke/`, git-ignored)
+- `make train DATASET=all` - engine-wise CV + official test protocol for every model; writes
+  `results/runs/<DS>_<model>.json` and `results/metrics.{md,json}` (`MODEL=xgboost` for one model)
+- `make results` - rebuild `results/metrics.{md,json}` from the run records
 - `make data-check` - verify real files in `data/raw/CMAPSS/`
 - `make prepare DATASET=FD002` - data pipeline summary on real data
 
@@ -30,4 +52,8 @@ real system (validated models, MLflow, FastAPI, Streamlit, Docker, drift monitor
   (`rul.features.Preprocessor`) on training engines only, and refit it inside each CV fold.
 - Test evaluation follows the official protocol: last window of each test engine vs `RUL_FDxxx.txt`.
   Headline test metrics use the raw (uncapped) true RUL; capped-truth metrics are a labelled extra.
+- Model selection uses CV RMSE only; test metrics are reported, never used to choose.
+- Models implement `fit(Windows)` / `predict(Windows)` and are registered in `rul.models`.
+- Real runs are made from a clean commit (each run record stores the commit hash), so code and
+  results land in separate commits.
 - Commits: conventional commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`, `ci:`).

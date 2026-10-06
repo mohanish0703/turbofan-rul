@@ -15,8 +15,9 @@ endif
 # The project venv when it exists (local dev), otherwise `python` (CI, Docker).
 PY ?= $(if $(wildcard $(VENV_PY)),$(VENV_PY),python)
 DATASET ?= FD001
+MODEL ?= all
 
-.PHONY: help venv install lint format test synthetic data-check prepare smoke train api dashboard
+.PHONY: help venv install lint format test synthetic data-check prepare smoke train results api dashboard
 
 help:
 	@echo Targets:
@@ -28,7 +29,10 @@ help:
 	@echo   synthetic   write SYNTHETIC C-MAPSS-format data to data/synthetic/CMAPSS
 	@echo   data-check  check for real C-MAPSS files, print instructions if missing
 	@echo   prepare     run the data pipeline on real data, DATASET=FD001 by default
-	@echo   smoke       full pipeline on SYNTHETIC data
+	@echo   train       CV + official test evaluation on real data, then the report
+	@echo               DATASET=FD001 or all, MODEL=all or naive/linear/random_forest/xgboost
+	@echo   results     rebuild results/metrics.md and .json from results/runs/
+	@echo   smoke       full pipeline on SYNTHETIC data, outputs in results/smoke/
 
 venv:
 	$(BOOTSTRAP) -m venv .venv
@@ -59,12 +63,18 @@ prepare:
 
 smoke: synthetic
 	$(PY) -m rul.prepare --config configs/smoke.yaml --dataset FD001 FD002 FD003 FD004
+	$(PY) -m rul.train --smoke --dataset all --model all
+	$(PY) -m rul.report --results results/smoke
 
 train:
-	$(error `make train` arrives in Phase 2)
+	$(PY) -m rul.train --dataset $(DATASET) --model $(MODEL)
+	$(PY) -m rul.report
+
+results:
+	$(PY) -m rul.report
 
 api:
-	$(error `make api` arrives in Phase 4)
+	$(error `make api` arrives in Phase 5)
 
 dashboard:
-	$(error `make dashboard` arrives in Phase 5)
+	$(error `make dashboard` arrives in Phase 6)

@@ -39,8 +39,13 @@ def nasa_score(y_true, y_pred) -> float:
 
 
 def all_metrics(y_true, y_pred) -> dict[str, float]:
+    """``nasa_score`` is the sum reported for the official test sets; ``nasa_score_mean`` divides
+    it by the number of predictions so sets of different sizes (e.g. CV folds) are comparable."""
+    t, p = _as_arrays(y_true, y_pred)
+    score = nasa_score(t, p)
     return {
-        "rmse": rmse(y_true, y_pred),
-        "mae": mae(y_true, y_pred),
-        "nasa_score": nasa_score(y_true, y_pred),
+        "rmse": rmse(t, p),
+        "mae": mae(t, p),
+        "nasa_score": score,
+        "nasa_score_mean": score / t.size,
     }

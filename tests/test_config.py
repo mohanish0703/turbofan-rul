@@ -21,6 +21,21 @@ def test_smoke_points_at_synthetic_data():
     assert "synthetic" in str(cfg.data.raw_dir)
 
 
+def test_model_settings_and_smoke_sizes():
+    cfg = config_for("FD001", config_dir=CONFIG_DIR)
+    smoke = config_for("FD001", extra=CONFIG_DIR / "smoke.yaml", config_dir=CONFIG_DIR)
+    assert smoke.models.xgboost.n_estimators < cfg.models.xgboost.n_estimators
+    assert smoke.models.random_forest.n_estimators < cfg.models.random_forest.n_estimators
+    # Deep merge: smoke.yaml only shrinks the ensembles; other settings are inherited.
+    assert smoke.models.xgboost.learning_rate == cfg.models.xgboost.learning_rate
+
+
+def test_overrides_are_applied_last():
+    cfg = config_for("FD002", config_dir=CONFIG_DIR, overrides={"cv": {"n_folds": 3}})
+    assert cfg.cv.n_folds == 3
+    assert cfg.preprocess.n_conditions == 6
+
+
 def test_invalid_values_rejected(tmp_path):
     bad = tmp_path / "bad.yaml"
     bad.write_text("preprocess:\n  rul_cap: 0\n", encoding="utf-8")

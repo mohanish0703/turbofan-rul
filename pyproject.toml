@@ -10,9 +10,9 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 authors = [{ name = "mohanish0703" }]
-# Exact pins. The full planned stack (torch 2.14.1+cpu, xgboost 3.2.0, mlflow 3.16.1,
-# fastapi 0.142.2, streamlit 1.64.0, evidently 0.7.23) was dry-run resolved together with
-# these; each extra is added in the phase that first uses it.
+# Exact pins. The full planned stack (torch 2.14.1+cpu, mlflow 3.16.1, fastapi 0.142.2,
+# streamlit 1.64.0, evidently 0.7.23) was dry-run resolved together with these; each is
+# added in the phase that first uses it.
 dependencies = [
     "numpy==2.4.6",
     "pandas==3.0.6",
@@ -20,6 +20,11 @@ dependencies = [
     "pydantic==2.13.5",
     "pyyaml==6.0.3",
     "joblib==1.6.0",
+    # xgboost-cpu is the same library without the CUDA build: on Linux plain `xgboost` is a
+    # 132 MB wheel plus the 352 MB nvidia-nccl-cu12 GPU library. There is no xgboost-cpu
+    # wheel for macOS, where plain `xgboost` is already a small CPU-only wheel.
+    "xgboost-cpu==3.2.0; sys_platform != 'darwin'",
+    "xgboost==3.2.0; sys_platform == 'darwin'",
 ]
 
 [project.optional-dependencies]
