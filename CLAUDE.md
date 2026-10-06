@@ -19,6 +19,8 @@ Backs the "Predictive Maintenance ML Service" entry on the owner's Data Scientis
 phase produces results, report the real numbers (and the month finished) so the resume can be
 updated to match the repo - never tune the repo to match the resume.
 
+- Phase 2 (baselines) done Oct 2026: naive/linear/RF/XGBoost; XGBoost has the lowest CV RMSE on
+  all four datasets. Numbers live in `results/metrics.md` only (generated; never retype them).
 - Phase 1 (data pipeline) done. Real C-MAPSS files are in `data/raw/CMAPSS/` (git-ignored, from
   NASA's PCoE archive); `python -m rul.prepare --dataset FD001 FD002 FD003 FD004` runs on them.
 - `.venv` already has torch 2.14.1+cpu installed but not pinned: pin it in Phase 3. XGBoost is
@@ -26,7 +28,7 @@ updated to match the repo - never tune the repo to match the resume.
 - Docker is not installed on this machine; the owner installs Docker Desktop before Phase 5.
 
 Remaining phases, one at a time:
-2. Baselines: Linear Regression, Random Forest, XGBoost, CV with engine-wise GroupKFold
+2. ~~Baselines: Linear Regression, Random Forest, XGBoost, CV with engine-wise GroupKFold~~ (done)
 3. LSTM and Transformer encoder (PyTorch)
 4. MLflow tracking; conformal prediction intervals at a 90% target, reporting the measured coverage
 5. FastAPI service + Dockerfile
