@@ -77,8 +77,11 @@ def _dataset_settings(runs: list[dict[str, Any]], dataset: str) -> dict[str, Any
                 f"{dataset} runs use different settings ({settings} vs {other} for "
                 f"{run['model']}); rerun them with one config so the table is comparable"
             )
+    test = ds_runs[0]["test"]
     settings["train_engines"] = ds_runs[0]["train_engines"]
-    settings["test_engines"] = ds_runs[0]["test"]["engines"]
+    settings["test_engines"] = test["engines"]
+    cap = settings["preprocess.rul_cap"]
+    settings["above_cap"] = sum(p["true_rul"] > cap for p in test["predictions"])
     return settings
 
 
@@ -104,7 +107,9 @@ def render_markdown(runs: list[dict[str, Any]], rows: list[dict[str, Any]], sour
         "- **Test**: official protocol. Each model is refit on all training engines and predicts "
         "RUL from the last window of every test engine; truth is `RUL_FDxxx.txt`, not capped.",
         "- **Test RMSE (capped truth)**: the same predictions against the true RUL capped at the "
-        "training cap, as some papers report it. Labelled extra, not the headline number.",
+        "training cap, as some papers report it. Labelled extra, not the headline number. "
+        "Predictions never exceed the cap, so test engines whose true RUL is above it add error "
+        "to the headline number that no capped model can remove.",
         "- **CV**: GroupKFold by engine on the training set, preprocessing refit in every fold; "
         "every window of the held-out engines against the capped target; mean +/- std over folds.",
         "- **Selected**: lowest CV RMSE per dataset. Test results play no part in the choice.",
@@ -133,7 +138,8 @@ def render_markdown(runs: list[dict[str, Any]], rows: list[dict[str, Any]], sour
             "",
             f"{s['train_engines']} training / {s['test_engines']} test engines, "
             f"{s['cv.n_folds']} CV folds, RUL cap {s['preprocess.rul_cap']}, "
-            f"window {s['preprocess.window_length']} cycles.",
+            f"window {s['preprocess.window_length']} cycles. {s['above_cap']} of "
+            f"{s['test_engines']} test engines have a true RUL above the cap.",
             "",
             "| Model | CV RMSE | CV MAE | Test RMSE | Test MAE | Test NASA score "
             "| Test RMSE (capped truth) |",

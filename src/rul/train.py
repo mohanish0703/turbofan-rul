@@ -206,7 +206,8 @@ def main(argv: list[str] | None = None) -> None:
             test = record["test"]["metrics"]
             print(
                 f"{ds} {name:14s} CV RMSE {cv['mean']:6.2f} +/- {cv['std']:5.2f} | "
-                f"test RMSE {test['rmse']:6.2f}  NASA {test['nasa_score']:10.1f}{tag} -> {path}"
+                f"test RMSE {test['rmse']:6.2f}  NASA {test['nasa_score']:10.1f}{tag} -> {path}",
+                flush=True,
             )
 
 

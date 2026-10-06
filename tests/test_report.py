@@ -24,6 +24,10 @@ def _run(dataset, model, cv_rmse, test_rmse, synthetic=False, rul_cap=125):
             "engines": 100,
             "metrics": _metrics(test_rmse),
             "metrics_capped_truth": _metrics(test_rmse - 1),
+            # True RUL 2, 4, ..., 200: 38 engines (126..200) are above a cap of 125.
+            "predictions": [
+                {"unit": i, "true_rul": 2 * i, "pred_rul": 100.0} for i in range(1, 101)
+            ],
         },
     }
 
@@ -63,6 +67,7 @@ def test_markdown_tables():
         "| **xgboost** (selected) | 13.00 +/- 1.00 | 10.40 | 14.00 | 11.20 | 140.0 | 13.00 |" in md
     )
     assert "100 training / 100 test engines, 5 CV folds, RUL cap 125" in md
+    assert "38 of 100 test engines have a true RUL above the cap." in md
     assert "SYNTHETIC" not in md
 
 
